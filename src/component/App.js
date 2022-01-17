@@ -36,10 +36,10 @@ class App extends React.Component{
         <SearchBar onFormSubmit={this.onTermSubmit}/>
         <div className='ui grid'>
           <div className='ui row'>
-            <div className='eleven wide column'>
+            <div className='ten wide column'>
               <VideoDetail video={this.state.selectedVideo} />
             </div>
-            <div className='five wide column'>
+            <div className='six wide column'>
               <VideoList 
                 onVideoSelect={this.onVideoSelect} // passing as a prop down to the VideoList  . the VideoList  in turn pass down to the VideoItem
                 videos={this.state.videos}
