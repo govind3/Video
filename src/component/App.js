@@ -1,55 +1,42 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react'
 import SearchBar from './SearchBar';
-import youtube from '../apis/youtube';
 import VideoList from './VideoList';
 import VideoDetail from './VideoDetail';
-class App extends React.Component{
+import useVideos from '../hooks/useVideos';
 
-  state={videos:[],selectedVideo:null};
+const App =()=>{
+  const [selectedVideo,setSelectedVideo]=useState(null);
+  const [videos,search]=useVideos('Covid 19');
 
-  componentDidMount(){
-    this.onTermSubmit("COVID 19")
-  }
+  useEffect(()=>{
+    setSelectedVideo(videos[0]);
+  },[videos]);
 
-  onTermSubmit= async (term)=>{
-    console.log(term);
-    const response=await youtube.get("/search",{
-      params: {
-        q:term
-      },
-    });
-    //console.log(response);
-    this.setState({
-      videos:response.data.items,
-      selectedVideo:response.data.items[0]   // default video on screen
-    });
+  //setSelectedVideo(response.data.items[0]);
+  
+  // callback method
+  // const onVideoSelect=(video)=>{   
+  //   setSelectedVideo(video);
+  // };
 
-  };
-
-  onVideoSelect=(video)=>{   // callback method
-    this.setState({selectedVideo:video});
-  };
-
-  render() {
-    return (
-      <div className="ui container" style={{marginTop:'7px'}}>
-        <SearchBar onFormSubmit={this.onTermSubmit} />
-        <div className="ui grid">
-          <div className="ui row">
-            <div className="eleven wide column">
-              <VideoDetail video={this.state.selectedVideo} />
-            </div>
-            <div className="five wide column">
-              <VideoList
-                onVideoSelect={this.onVideoSelect}  // passing as a prop down to the VideoList  . the VideoList  in turn pass down to the VideoItem
-                videos={this.state.videos}
-              />
-            </div>
+  return (
+    <div className="ui container" style={{marginTop:'7px'}}>
+      <SearchBar onFormSubmit={search} />
+      <div className="ui grid">
+        <div className="ui row">
+          <div className="eleven wide column">
+            <VideoDetail video={selectedVideo} />
+          </div>
+          <div className="five wide column">
+            <VideoList
+              onVideoSelect={setSelectedVideo}  // passing as a prop down to the VideoList  . the VideoList  in turn pass down to the VideoItem
+              videos={videos}
+            />
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
